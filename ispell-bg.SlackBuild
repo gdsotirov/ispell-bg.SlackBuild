@@ -7,20 +7,22 @@
 . /etc/slack-package.conf
 
 NAME=ispell
-VERSION=4.0
+VERSION=4.1
 PACK_LANG=bg
 FULL_LANG=bulgarian
 BUILD=1
 ARCH=noarch
 
 TMP=${TMP:-/tmp}
+CWD=${CWD:-`pwd`}
+
 cd $TMP
 tar -zxvf $CWD/$NAME-$PACK_LANG-$VERSION.tar.gz
 SRC=$TMP/$NAME-$PACK_LANG-$VERSION
 cd $SRC
 fix_source
 
-make
+make || exit 1
 
 # Install manually
 PKG="$TMP/package-$NAME"
@@ -37,9 +39,12 @@ create_docs $PKG $NAME-$PACK_LANG-$VERSION
 
 install -d -m 755 $PKG/install
 install -m 644 $CWD/slack-desc $PKG/install/slack-desc
+
 install -d -m 755 $PKG/usr/src/slackbuilds/$NAME-$PACK_LANG-$VERSION
-install -m 644 $CWD/slack-desc $PKG/usr/src/slackbuilds/$NAME-$PACK_LANG-$VERSION
-install -m 644 $CWD/$NAME-$PACK_LANG.SlackBuild $PKG/usr/src/slackbuilds/$NAME-$PACK_LANG-$VERSION
+install -m 644 $CWD/slack-desc \
+               $PKG/usr/src/slackbuilds/$NAME-$PACK_LANG-$VERSION
+install -m 644 $CWD/$NAME-$PACK_LANG.SlackBuild \
+               $PKG/usr/src/slackbuilds/$NAME-$PACK_LANG-$VERSION
 
 PKG_DIR=${PKG_DIR:-/tmp}
 cd $PKG
